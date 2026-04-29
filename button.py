@@ -1,6 +1,5 @@
-import pygame
+import pygame, assets
 pygame.font.init()
-
 
 class Button():
 
@@ -19,7 +18,6 @@ class Button():
     def draw(self):
         action = self.is_clicked()
         pygame.draw.rect(self.surface, self.color, self.rect, self.thickness, self.border_radius)
-        print(action)
         return action
 
 
@@ -38,16 +36,17 @@ class Button():
         return action
 
 class TextButton(Button):
-    font = pygame.font.Font('./assets/ARCADECLASSIC.TTF', 30)
+    
     def __init__(self, surface, color, x, y, height, width, thickness, border_radius, text):
         super().__init__(surface, color, x, y, height, width, thickness, border_radius)
+        self.font = assets.get_font()
         self.text = text
         self.text_surface = self.font.render(text, True, (255, 255, 255))
         self.text_rect = self.text_surface.get_rect(center=self.rect.center)
 
     def draw(self):
+        
         action = self.is_clicked()
         pygame.draw.rect(self.surface, self.color, self.rect, self.thickness, self.border_radius)
         self.surface.blit(self.text_surface, self.text_rect)
-        print(action)
         return action
