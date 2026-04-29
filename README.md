@@ -1,7 +1,8 @@
 # python-clicker-game
 
 ## Last Update
-So far we have buttons
+So far we have buttons and a counter
+Next I want to make things happen over time and add population count
 
 ## Summary
 The idea for this game is that you have a population and resources maybe some world events
