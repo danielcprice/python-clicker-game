@@ -19,3 +19,9 @@ Add screen to create a new game or load a save
 
 Create a list of all resource buttons to be added or removed from the list of buttons availble to the player and have it also tie
 into the list of resources which are being tracked
+
+## Assignment Rubric
+
+Code must not be copied
+Must include all concepts from class:
+
