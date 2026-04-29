@@ -19,7 +19,7 @@ into the list of resources which are being tracked
 ## Assignment Rubric
 
 Code must not be copied<br/>
-Must include all concepts from class:\
-Functions - \
-Dictionaries - \
+Must include all concepts from class:<br/>
+Functions - <br>
+Dictionaries - <br/>
 
