@@ -1,13 +1,8 @@
 import pygame, game, assets
+from sys import exit
 
 SCREEN = assets.SCREEN
-pygame.display.set_caption("My Game")
-
-def game_exit():
-    pass
-
-def draw_menu(running):
-    pass
+pygame.display.set_caption("TITLE!")
 
 def main():
     SCREEN.fill((5, 5, 5))
@@ -15,21 +10,21 @@ def main():
     state = 'MENU'    
     while running:
         if state == 'MENU':
-            SCREEN.blit(assets.main_menu_title, (5, 5))
-            if assets.start_button.draw():
+            SCREEN.blit(assets.main_menu_title, (assets.center_x - 20, assets.center_y - 160))
+            if assets.main_start_button.draw():
                 state = 'GAME'
-            if assets.exit_button.draw():
+            if assets.main_exit_button.draw():
                 print("Exited")
                 running = False
                 return running
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
-                    return running
+                    pygame.quit()
+                    exit()
             pygame.display.update()
         
         elif state == 'GAME':
-            game.start_game()
+            game.play_game()
             state = 'MENU'
             
 main()
