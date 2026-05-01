@@ -8,7 +8,7 @@ class Button():
         self.color = color
         self.x = x
         self.y = y
-        self.height = height
+        self.height = self.surface
         self.width = width
         self.thickness = thickness
         self.border_radius = border_radius
@@ -41,7 +41,7 @@ class TextButton(Button):
         super().__init__(surface, color, x, y, height, width, thickness, border_radius)
         self.font = assets.get_font()
         self.text = text
-        self.text_surface = self.font.render(text, True, (255, 255, 255))
+        self.text_surface = self.font.render(text, True, (255, 255, 255),)
         self.text_rect = self.text_surface.get_rect(center=self.rect.center)
 
     def draw(self):
@@ -50,3 +50,6 @@ class TextButton(Button):
         pygame.draw.rect(self.surface, self.color, self.rect, self.thickness, self.border_radius)
         self.surface.blit(self.text_surface, self.text_rect)
         return action
+    
+class IconButton(Button):
+    pass
