@@ -1,5 +1,9 @@
-import pygame, assets
+import pygame
 pygame.font.init()
+
+def get_font(size=30):
+    font = pygame.font.Font('./assets/font.TTF', size)
+    return font
 
 class Button():
 
@@ -37,9 +41,9 @@ class Button():
 
 class TextButton(Button):
     
-    def __init__(self, surface, color, x, y, height, width, thickness, border_radius, text):
+    def __init__(self, surface, color, x, y, height, width, thickness, border_radius, text, font_size=30):
         super().__init__(surface, color, x, y, height, width, thickness, border_radius)
-        self.font = assets.get_font()
+        self.font = get_font(font_size)
         self.text = text
         self.text_surface = self.font.render(text, True, (255, 255, 255),)
         self.text_rect = self.text_surface.get_rect(center=self.rect.center)

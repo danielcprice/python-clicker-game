@@ -1,12 +1,10 @@
-# For utilities
-
 import pygame
 from simple_gui.gui import SCREEN, update_scale
 
 def initialize():
     update_scale()
 
-
+pygame.display.set_caption("Bunker!")
 screen_height = SCREEN.get_height()
 screen_width = SCREEN.get_width()
 button_height = SCREEN.get_height() * .1
@@ -67,3 +65,5 @@ class Timer(GameClock):
 
 def clear_screen():
     pass
+
+time = GameClock()
