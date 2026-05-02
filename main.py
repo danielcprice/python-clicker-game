@@ -33,7 +33,7 @@ def main():
             components.play_game()
             state = 'MENU'
         elif state == 'TEST':
-            components.test_game()
+            pass
             state = 'MENU'
         pygame.display.update()
 main()

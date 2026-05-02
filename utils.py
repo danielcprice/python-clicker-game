@@ -4,7 +4,7 @@ from simple_gui.gui import SCREEN, update_scale
 def initialize():
     update_scale()
 
-pygame.display.set_caption("Bunker!")
+pygame.display.set_caption("Ant Colony!")
 screen_height = SCREEN.get_height()
 screen_width = SCREEN.get_width()
 button_height = SCREEN.get_height() * .1
