@@ -4,6 +4,9 @@ from simple_gui.gui import SCREEN, update_scale
 def initialize():
     update_scale()
 
+def clear_screen():
+    pass
+
 pygame.display.set_caption("Ant Colony!")
 screen_height = SCREEN.get_height()
 screen_width = SCREEN.get_width()
@@ -22,6 +25,7 @@ class GameClock():
         self.clock = pygame.time.Clock()
         self.start_ticks = pygame.time.get_ticks()
         self.stop_ticks = pygame.time.get_ticks()
+        self.dt = 0
         self.run_clock = False
         GameClock.clock_list.append(self)
 
@@ -46,24 +50,12 @@ class GameClock():
 
         return current_time
     
-class Timer(GameClock):
-    timer_list = []
-    def __init__(self, name, action, limit: int):
-        super().__init__()
-        self.name = name
-        self.action = action
-        self.limit = limit
-        Timer.timer_list.append(self)
-
-    def reset_timer(self):
-        self.start_ticks = pygame.time.get_ticks()
-    
-    def check_timer(self):
-        if self.get_time() >= self.limit:
-            self.reset_timer()
-            self.action()
-
-def clear_screen():
-    pass
+    def tick(self, fps=60):
+        if self.run_clock:
+            self.dt = self.clock.tick(fps) / 1000
+        else:
+            self.clock.tick(fps)
+            self.dt = 0
+        return self.dt
 
 time = GameClock()

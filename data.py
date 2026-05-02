@@ -1,4 +1,3 @@
-from utils import Timer
 from math import floor, ceil
 
 # For storing data
@@ -39,34 +38,32 @@ pop_states = {'hunger': False, 'happiness': 0}
 #     if pop_states['hunger'] == True:
 #         adj_happiness('DOWN', 5)
     
-def adj_happiness(direction: str = 'UP', amount=1):
-    if direction == 'UP':
-        if pop_states['happiness'] < 50:
-            pop_states['happiness'] += abs(amount)
-        else:
-            pass
-    elif direction == 'DOWN':
-        if pop_states['happiness'] > -50:
-            pop_states['happiness'] -= abs(amount)
-        else:
-            pass
+# def adj_happiness(direction: str = 'UP', amount=1):
+#     if direction == 'UP':
+#         if pop_states['happiness'] < 50:
+#             pop_states['happiness'] += abs(amount)
+#         else:
+#             pass
+#     elif direction == 'DOWN':
+#         if pop_states['happiness'] > -50:
+#             pop_states['happiness'] -= abs(amount)
+#         else:
+#             pass
 
-def maintain_trends():
-    for timer in Timer.timer_list:
-        timer.check_timer()
+def maintain_consumption(dt):
+    for ant_type in Population.ant_types:
+        sugar.remove_res(ant_type.get_consumption(dt))
 
-def maintain_all():
+def maintain_all(dt):
     Population.update_population()
-    maintain_trends()
+    maintain_consumption(dt)
 
 
 # Make a list of available resources and a list of the ones the player has obtained
 class Resource():
-    def __init__(self, name, amount:int =0, trend=0):
+    def __init__(self, name, amount:int =0):
         self.name = name
         self.amount = amount
-        self.trend_amount = trend
-        self.timer = Timer(self.name, self.trend, 1000)
 
     def add_res(self, amount: int= 1):
         self.amount += abs(amount)
@@ -76,18 +73,6 @@ class Resource():
         if self.amount >= positive_amount:
             self.amount -= positive_amount
 
-    def change_trend(self, new_trend):
-        self.trend = new_trend
-
-    def trend(self):
-        if self.amount >= abs(self.trend_amount):
-            if pop_states['hunger'] == True:
-                self.amount += (abs(self.trend_amount) * -2)
-            else:
-                self.amount += self.trend_amount
-        else:
-            self.amount = 0
-
     def get_amount(self):
         return floor(self.amount)
 
@@ -95,24 +80,19 @@ class Resource():
 # and +1 per 5 population
 # Trend for cooked edible resources could be -1 per 5 population and +1 per 1 "cook"
 # Population with "jobs" will no longer do the grunt work of collecting basic resources
-dew = Resource('dew', amount=10, trend=-1)
+dew = Resource('dew', amount=10)
 
 class Population(Resource):
     capacity = 10
     total_population = 0
     ant_types = []
-    def __init__(self, name, amount=0, trend=0):
-        super().__init__(name, amount, trend)
+    def __init__(self, name, amount=0, consumption=1):
+        super().__init__(name, amount)
+        self.consumption = consumption
         Population.ant_types.append(self)
 
-    def trend(self):
-        if Population.total_population >= Population.capacity:
-            pass
-        else:
-            if self.amount >= abs(self.trend_amount):
-                self.amount += (self.trend_amount + (pop_states['happiness'] / 100))
-            else:
-                self.amount = 0
+    def get_consumption(self, dt):
+        return self.amount * self.consumption * dt
 
     def get_amount(self):
         return ceil(self.amount)
@@ -131,27 +111,28 @@ class Population(Resource):
         Population.capacity -= abs(dec_amount)
 
 class Queen(Population):
-    def __init__(self, name, amount=1, trend=0):
-        super().__init__(name, amount, trend)
+    def __init__(self, name, amount=1, consumption=0):
+        super().__init__(name, amount, consumption)
+        pass
 
     
 
 class Larvae(Population):
-    def __init__(self, name, amount=0, trend=0):
-        super().__init__(name, amount, trend)
+    def __init__(self, name, amount=0, consumption=0):
+        super().__init__(name, amount, consumption)
 
 class Worker(Population):
-    def __init__(self, name, amount=0, trend=0):
-        super().__init__(name, amount, trend)
+    def __init__(self, name, amount=0, consumption=0):
+        super().__init__(name, amount, consumption)
 
 
 # Resources
-sugar = Resource('sugar', amount=10, trend=-1)
-dew = Resource('dew', amount=10, trend=-1)
+sugar = Resource('sugar', amount=10)
+dew = Resource('dew', amount=10)
 
 # Populations
-queen = Queen("queen")
-larvae = Larvae("larvae", amount=0, trend=.1)
+queen = Queen('queen')
+larvae = Larvae("larvae")
 forager = Worker('forager')
 nursery = Worker('nursery')
 tunneler = Worker('tunneler')

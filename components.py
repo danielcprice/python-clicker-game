@@ -77,8 +77,7 @@ def render_game_buttons():
 
 def play_game():
     running = True
-    for clocks in GameClock.clock_list:
-        clocks.start_clock()
+    dt = time.tick()
     SCREEN.fill((202, 228, 241))
     while running:
         SCREEN.fill((30, 26, 21))
@@ -98,7 +97,7 @@ def play_game():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-        maintain_all()
+        maintain_all(dt)
         pygame.display.update()
 
 def research_screen():
