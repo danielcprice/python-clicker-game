@@ -1,8 +1,7 @@
-import pygame, screens, assets
-from simple_gui.gui import SCREEN, change_screen, update_scale
+from utils import SCREEN, GameClock
+import pygame, components
 from sys import exit
 
-pygame.display.set_caption("Bunker!")
 
 def main():
     SCREEN.fill((30, 26, 21))
@@ -10,14 +9,18 @@ def main():
     state = 'MENU'    
     while running:
         if state == 'MENU':
-            SCREEN.blit(assets.main_menu_title, (assets.center_x, assets.center_y - 300))
-            if assets.main_start_button.draw():
+            running = True
+            for clocks in GameClock.clock_list:
+                clocks.start_clock()
+            SCREEN.fill((30, 26, 21))
+            SCREEN.blit(components.main_menu_title, (components.center_x, components.center_y - 300))
+            if components.main_start_button.draw():
                 print('GAME')
                 state = 'GAME'
-            if assets.main_test_button.draw():
+            if components.main_test_button.draw():
                 print('TEST')
                 state = 'TEST'
-            if assets.main_exit_button.draw():
+            if components.main_exit_button.draw():
                 print("Exited")
                 running = False
                 return running
@@ -26,13 +29,11 @@ def main():
                     pygame.quit()
                     exit()
             pygame.display.update()
-        
         elif state == 'GAME':
-            screens.play_game()
+            components.play_game()
             state = 'MENU'
         elif state == 'TEST':
-            screens.test_game()
+            pass
             state = 'MENU'
-
-            
+        pygame.display.update()
 main()
