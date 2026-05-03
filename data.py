@@ -41,8 +41,7 @@ def maintain_all(dt):
     total_production = forager.amount * forager.efficiency
     for ant_type in Population.ant_types:
         total_consumption -= ant_type.consumption * ant_type.amount
-    sugar.inc_dec_amount(total_production - abs(total_consumption))
-    dew.inc_dec_amount(total_production - abs(total_consumption))
+    food.inc_dec_amount(total_production - abs(total_consumption))
 
 
 # Make a list of available resources and a list of the ones the player has obtained
@@ -81,7 +80,7 @@ class Population(Resource):
         return self.amount * self.consumption * dt
 
     def get_amount(self):
-        return ceil(self.amount)
+        return floor(self.amount)
     
     def update_population():
         Population.total_population = 0
@@ -97,7 +96,7 @@ class Population(Resource):
         Population.capacity -= abs(dec_amount)
 
 class Queen(Population):
-    def __init__(self, name, amount=1, consumption=.05, efficiency=.01):
+    def __init__(self, name, amount=1, consumption=.05, efficiency=.1):
         super().__init__(name, amount, consumption, efficiency)
     
     def produce(self, dt):
@@ -122,17 +121,16 @@ class Forager(Population):
         super().__init__(name, amount, consumption, efficiency)
 
     def produce(self, dt):
-        sugar.add_res(self.amount * self.efficiency * dt)
-        dew.add_res(self.amount * self.efficiency * dt)
+        food.add_res(self.amount * self.efficiency * dt)
 
 
 # Resources
-sugar = Resource('sugar', amount=10)
-dew = Resource('dew', amount=10)
+food = Resource('food', amount=10)
+# dew = Resource('dew', amount=10)
 
 # Populations
-queen = Queen('queen')
-larvae = Larvae("larvae")
+queen = Queen('queen', amount=1)
+larvae = Larvae("larvae", 8)
 nursery = Nursery('Nusery')
 forager = Forager('forager')
 # tunneler = Worker('tunneler')

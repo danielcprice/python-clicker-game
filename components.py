@@ -1,5 +1,5 @@
 import pygame
-from data import Population, sugar, dew, larvae, queen, maintain_all
+from data import Population, food, larvae, queen, maintain_all
 from utils import time
 from simple_gui.gui import SCREEN
 from simple_gui.button import TextButton, get_font
@@ -13,8 +13,7 @@ center_x = (SCREEN.get_width() / 2) - (button_width / 2)
 center_y = (SCREEN.get_height() / 2) - (button_height / 2)
 
 # Game Buttons
-sugar_button = TextButton(SCREEN, (150,150,150), center_x, center_y - (screen_height * .15), button_height, button_width, 5, 10, "COLLECT SUGAR")
-dew_button = TextButton(SCREEN, (150,150,150), center_x, center_y, button_height, button_width, 5, 10, "COLLECT DEW")
+food_button = TextButton(SCREEN, (150,150,150), center_x, center_y - (screen_height * .15), button_height, button_width, 5, 10, "COLLECT FOOD")
 excavate_button = TextButton(SCREEN, (150,150,150), center_x, center_y + (screen_height * .15), button_height, button_width, 5, 10, "EXCAVATE")
 play_button = TextButton(SCREEN, (150,2,2), screen_width - 150, screen_height - 300, 50, 100, 5, 10, "play")
 pause_button = TextButton(SCREEN, (150,2,2), screen_width - 150, screen_height - 200, 50, 100, 5, 10, "PAUSE")
@@ -50,8 +49,7 @@ def render_capacity(x, y):
 
 def render_resources():
     # if resources then for resources get tracker
-    render_tracker(sugar, 5, 5)
-    render_tracker(dew, 5, 45)
+    render_tracker(food, 5, 5)
     render_tracker(queen, 5, 85)
     render_tracker(larvae, 5, 125)
     render_capacity(5, 165)
@@ -67,10 +65,8 @@ def render_game_buttons():
     # make a button group class for managing groups of buttons
     # then they can sorted and be pulled in easily
     # if buttons get buttons
-    if sugar_button.draw():
-        sugar.add_res()
-    if dew_button.draw():
-        dew.add_res()
+    if food_button.draw():
+        food.add_res()
     if excavate_button.draw():
         Population.increase_cap()
     if pause_button.draw():
