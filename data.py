@@ -1,26 +1,6 @@
 from math import floor, ceil
 
-# For storing data
-main_menu_buttons = []
-statuses = {'hunger': 0, 'happiness': 0}
-
-space = {1: 'algae'}
-
 active_perks = []
-
-pos_perks = {'happy': 0}
-
-neg_perks = {'picky_eaters': 0}
-
-all_resources = []
-
-all_products = []
-
-all_populations = []
-
-main_menu_game_summary = 'You are in your bunker when the wasteland arrives.' \
-'Now you must work hard to keep yourself alive. Hopefully you don\'t go mad before' \
-'you\'re able to make some friends!'
 
 # Need to handle population states
 pop_states = {'hunger': False, 'happiness': 0}
@@ -49,14 +29,20 @@ pop_states = {'hunger': False, 'happiness': 0}
 #             pop_states['happiness'] -= abs(amount)
 #         else:
 #             pass
-
-def maintain_consumption(dt):
-    for ant_type in Population.ant_types:
-        sugar.remove_res(ant_type.get_consumption(dt))
+def maintain_resources(dt):
+    pass    
 
 def maintain_all(dt):
     Population.update_population()
-    maintain_consumption(dt)
+    # Maintain Consumption Rate
+    total_consumption = 0
+    total_production = 0
+    queen.produce(dt)
+    total_production = forager.amount * forager.efficiency
+    for ant_type in Population.ant_types:
+        total_consumption -= ant_type.consumption * ant_type.amount
+    sugar.inc_dec_amount(total_production - abs(total_consumption))
+    dew.inc_dec_amount(total_production - abs(total_consumption))
 
 
 # Make a list of available resources and a list of the ones the player has obtained
@@ -65,30 +51,30 @@ class Resource():
         self.name = name
         self.amount = amount
 
-    def add_res(self, amount: int= 1):
+    def add_res(self, amount: float = 1.0):
         self.amount += abs(amount)
 
-    def remove_res(self, amount: int=1):
+    def remove_res(self, amount: float = 1.0):
         positive_amount = abs(amount)
         if self.amount >= positive_amount:
             self.amount -= positive_amount
 
+    def inc_dec_amount(self, inc_dec_amount: float):
+        self.amount += inc_dec_amount
+        if self.amount < 0:
+            self.amount = 0
+
     def get_amount(self):
         return floor(self.amount)
-
-# Trend for raw edible resources should be -1 per 2 population
-# and +1 per 5 population
-# Trend for cooked edible resources could be -1 per 5 population and +1 per 1 "cook"
-# Population with "jobs" will no longer do the grunt work of collecting basic resources
-dew = Resource('dew', amount=10)
 
 class Population(Resource):
     capacity = 10
     total_population = 0
     ant_types = []
-    def __init__(self, name, amount=0, consumption=1):
+    def __init__(self, name, amount=0, consumption=0, efficiency=0):
         super().__init__(name, amount)
         self.consumption = consumption
+        self.efficiency = efficiency
         Population.ant_types.append(self)
 
     def get_consumption(self, dt):
@@ -111,19 +97,33 @@ class Population(Resource):
         Population.capacity -= abs(dec_amount)
 
 class Queen(Population):
-    def __init__(self, name, amount=1, consumption=0):
-        super().__init__(name, amount, consumption)
-        pass
-
+    def __init__(self, name, amount=1, consumption=.05, efficiency=.01):
+        super().__init__(name, amount, consumption, efficiency)
     
+    def produce(self, dt):
+        if Population.total_population >= Population.capacity:
+            pass
+        else:
+            larvae.add_res(self.efficiency * dt)
 
 class Larvae(Population):
-    def __init__(self, name, amount=0, consumption=0):
+    def __init__(self, name, amount=0, consumption=.005):
         super().__init__(name, amount, consumption)
 
-class Worker(Population):
-    def __init__(self, name, amount=0, consumption=0):
+    def produce(self, dt):
+        pass
+
+class Nursery(Larvae):
+    def __init__(self, name, amount=0, consumption=.02):
         super().__init__(name, amount, consumption)
+
+class Forager(Population):
+    def __init__(self, name, amount=0, consumption=.2, efficiency=.01):
+        super().__init__(name, amount, consumption, efficiency)
+
+    def produce(self, dt):
+        sugar.add_res(self.amount * self.efficiency * dt)
+        dew.add_res(self.amount * self.efficiency * dt)
 
 
 # Resources
@@ -133,7 +133,7 @@ dew = Resource('dew', amount=10)
 # Populations
 queen = Queen('queen')
 larvae = Larvae("larvae")
-forager = Worker('forager')
-nursery = Worker('nursery')
-tunneler = Worker('tunneler')
-soldier = Worker('soldier')
+nursery = Nursery('Nusery')
+forager = Forager('forager')
+# tunneler = Worker('tunneler')
+# soldier = Worker('soldier')

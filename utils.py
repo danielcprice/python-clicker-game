@@ -37,6 +37,9 @@ class GameClock():
         self.run_clock = False
         self.stop_ticks = self.get_ticks()
 
+    def pause_time(self):
+        pass
+
     def get_ticks(self):
         return pygame.time.get_ticks() - self.start_ticks
     
@@ -52,7 +55,7 @@ class GameClock():
     
     def tick(self, fps=60):
         if self.run_clock:
-            self.dt = self.clock.tick(fps) / 1000
+            self.dt = self.clock.tick(fps)
         else:
             self.clock.tick(fps)
             self.dt = 0

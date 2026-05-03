@@ -1,6 +1,6 @@
 import pygame
 from data import Population, sugar, dew, larvae, queen, maintain_all
-from utils import GameClock, time
+from utils import time
 from simple_gui.gui import SCREEN
 from simple_gui.button import TextButton, get_font
 
@@ -16,6 +16,8 @@ center_y = (SCREEN.get_height() / 2) - (button_height / 2)
 sugar_button = TextButton(SCREEN, (150,150,150), center_x, center_y - (screen_height * .15), button_height, button_width, 5, 10, "COLLECT SUGAR")
 dew_button = TextButton(SCREEN, (150,150,150), center_x, center_y, button_height, button_width, 5, 10, "COLLECT DEW")
 excavate_button = TextButton(SCREEN, (150,150,150), center_x, center_y + (screen_height * .15), button_height, button_width, 5, 10, "EXCAVATE")
+play_button = TextButton(SCREEN, (150,2,2), screen_width - 150, screen_height - 300, 50, 100, 5, 10, "play")
+pause_button = TextButton(SCREEN, (150,2,2), screen_width - 150, screen_height - 200, 50, 100, 5, 10, "PAUSE")
 exit_button = TextButton(SCREEN, (150,2,2), screen_width - 150, screen_height - 100, 50, 100, 5, 10, "EXIT")
 
 # Resource Trackers
@@ -28,7 +30,7 @@ main_exit_button = TextButton(SCREEN, (150,2,2), center_x, center_y + (screen_he
 
 
 # Win/Loss Screens
-you_lose_message = get_font(60).render("The Wasteland wasted you!", True, (255, 255, 255))
+you_lose_message = get_font(60).render("You lost the QUEEN!", True, (255, 255, 255))
 
 # Render Components
 
@@ -71,25 +73,27 @@ def render_game_buttons():
         dew.add_res()
     if excavate_button.draw():
         Population.increase_cap()
+    if pause_button.draw():
+        time.stop_clock()
+    if play_button.draw():
+        time.start_clock()
 
 
 # Screens
 
 def play_game():
     running = True
-    dt = time.tick()
-    SCREEN.fill((202, 228, 241))
+    # time.start_clock()
+    # dt = time.tick() / 1000
     while running:
-        SCREEN.fill((30, 26, 21))
-        time.clock.tick(30)
+        dt = time.tick(30) / 1000
+        maintain_all(dt)
         SCREEN.fill((5, 5, 5))
-        # SCREEN.blit(assets.potato_tracker, (5, 5))
         render_resources()
         render_game_buttons()
         if exit_button.draw():
             # Exit should eventually clear the game stats and save to file
-            for clocks in GameClock.clock_list:
-                clocks.stop_clock()
+            time.stop_clock()
             running = False
             clear_screen()
             return running
@@ -97,7 +101,6 @@ def play_game():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-        maintain_all(dt)
         pygame.display.update()
 
 def research_screen():
