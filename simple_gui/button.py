@@ -10,10 +10,6 @@ class Button():
     def __init__(self, surface, color, x, y, height, width, thickness, border_radius):
         self.surface = surface
         self.color = color
-        self.x = x
-        self.y = y
-        self.height = self.surface
-        self.width = width
         self.thickness = thickness
         self.border_radius = border_radius
         self.clicked = False

@@ -2,7 +2,6 @@ from utils import SCREEN, GameClock
 import pygame, components
 from sys import exit
 
-
 def main():
     SCREEN.fill((30, 26, 21))
     running = True
