@@ -22,7 +22,7 @@ def maintain_all(dt):
     for ant_type in Population.ant_types:
         total_consumption -= ant_type.consumption * ant_type.amount
     food.inc_dec_amount(total_production - abs(total_consumption))
-    print(larvae.amount % 1)
+    print(larvae.amount)
     print(forager.amount)
 
 
@@ -38,6 +38,8 @@ class Resource():
         positive_amount = abs(amount)
         if self.amount >= positive_amount:
             self.amount -= positive_amount
+            if self.amount < 1:
+                self.amount = abs(self.amount)
 
     def inc_dec_amount(self, inc_dec_amount: float):
         self.amount += inc_dec_amount
@@ -90,7 +92,7 @@ class Larvae(Population):
     def __init__(self, name, amount=0, consumption=.005, efficiency=1):
         super().__init__(name, amount, consumption)
         self.efficiency = efficiency
-        self.ant_limits = {'forager': 10, 'nursery': 0, 'tunneller': 0, 'soldier': 0}
+        self.ant_limits = {'forager': 3, 'nursery': 3, 'tunneller': 3, 'soldier': 3}
 
 
     def update_ant_limites():
@@ -98,10 +100,24 @@ class Larvae(Population):
 
     def produce(self, dt):
         larvae_change = self.efficiency * dt
-        if larvae.amount > 0:
+        if larvae.amount > 1:
             if forager.get_amount() < self.ant_limits['forager']:
-                larvae.amount -= larvae_change
-                forager.amount += larvae_change
+                larvae.amount -= 1
+                forager.amount += 1
+                pass
+            elif nursery.get_amount() < self.ant_limits['nursery']:
+                larvae.amount -= 1
+                nursery.amount += 1
+                pass
+            elif soldier.get_amount() < self.ant_limits['soldier']:
+                larvae.amount -= 1
+                soldier.amount += 1
+                pass
+            elif tunneller.get_amount() < self.ant_limits['tunneller']:
+                larvae.amount -= 1
+                tunneller.amount += 1
+                pass
+
 
 
 class Nursery(Larvae):
@@ -109,14 +125,20 @@ class Nursery(Larvae):
         super().__init__(name, amount, consumption)
 
 class Forager(Population):
-    def __init__(self, name, limit=10, amount=0, consumption=.2, efficiency=.21):
+    def __init__(self, name, amount=0, consumption=.2, efficiency=.21):
         super().__init__(name, amount, consumption, efficiency)
-        self.limit = limit
 
     def produce(self, dt):
         food.add_res(self.amount * (self.efficiency * dt))
 
 class Tunneler(Population):
+    def __init__(self, name, amount=0, consumption=.2, efficiency=.21):
+        super().__init__(name, amount, consumption, efficiency)
+
+    def produce(self, dt):
+        food.add_res(self.amount * (self.efficiency * dt))
+
+class Soldier(Population):
     def __init__(self, name, amount=0, consumption=.2, efficiency=.21):
         super().__init__(name, amount, consumption, efficiency)
 
@@ -133,5 +155,5 @@ queen = Queen('queen', 1)
 larvae = Larvae("larvae", 1)
 nursery = Nursery('Nusery')
 forager = Forager('forager', 0)
-# tunneler = Worker('tunneler')
-# soldier = Worker('soldier')
+tunneller = Tunneler('tunneler')
+soldier = Soldier('soldier')
