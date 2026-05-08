@@ -3,7 +3,7 @@ import pygame, components
 from sys import exit
 
 def main():
-    SCREEN.fill((30, 26, 21))
+    SCREEN.fill(components.BROWN)
     running = True
     state = 'MENU'    
     while running:

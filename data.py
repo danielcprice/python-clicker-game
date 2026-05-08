@@ -1,36 +1,15 @@
-from math import floor, ceil
+from math import floor
 
-active_perks = []
-
-# Need to handle population states
-pop_states = {'hunger': False, 'happiness': 0}
-# waste_modifier = Population.population
-
-
-# def hunger_check():
-
-#     for food in EdibleResource.food_list:
-#         if EdibleResource.food_list[food] > 0:
-#             pop_states['hunger'] = False
-#         else:
-#             pop_states['hunger'] == True
-
-#     if pop_states['hunger'] == True:
-#         adj_happiness('DOWN', 5)
-    
-# def adj_happiness(direction: str = 'UP', amount=1):
-#     if direction == 'UP':
-#         if pop_states['happiness'] < 50:
-#             pop_states['happiness'] += abs(amount)
-#         else:
-#             pass
-#     elif direction == 'DOWN':
-#         if pop_states['happiness'] > -50:
-#             pop_states['happiness'] -= abs(amount)
-#         else:
-#             pass
-def maintain_resources(dt):
-    pass    
+def win_loss_check():
+    if food.amount < 1:
+        if larvae.amount > 0:
+            larvae.amount -= .1
+        elif larvae.amount < 1:
+            return 'lose'
+        
+    if Population.total_population >= 100000:
+        return 'win'
+            
 
 def maintain_all(dt):
     Population.update_population()
@@ -42,9 +21,9 @@ def maintain_all(dt):
     for ant_type in Population.ant_types:
         total_consumption -= ant_type.consumption * ant_type.amount
     food.inc_dec_amount(total_production - abs(total_consumption))
+    print(larvae.amount % 1)
 
 
-# Make a list of available resources and a list of the ones the player has obtained
 class Resource():
     def __init__(self, name, amount:int =0):
         self.name = name
@@ -117,21 +96,28 @@ class Nursery(Larvae):
         super().__init__(name, amount, consumption)
 
 class Forager(Population):
-    def __init__(self, name, amount=0, consumption=.2, efficiency=.01):
+    def __init__(self, name, amount=0, consumption=.2, efficiency=.21):
         super().__init__(name, amount, consumption, efficiency)
 
     def produce(self, dt):
-        food.add_res(self.amount * self.efficiency * dt)
+        food.add_res(self.amount * (self.efficiency * dt))
+
+class Tunneler(Population):
+    def __init__(self, name, amount=0, consumption=.2, efficiency=.21):
+        super().__init__(name, amount, consumption, efficiency)
+
+    def produce(self, dt):
+        food.add_res(self.amount * (self.efficiency * dt))
 
 
 # Resources
-food = Resource('food', amount=10)
+food = Resource('food', amount=10000)
 # dew = Resource('dew', amount=10)
 
 # Populations
-queen = Queen('queen', amount=1)
-larvae = Larvae("larvae", 8)
+queen = Queen('queen', 1)
+larvae = Larvae("larvae", 1)
 nursery = Nursery('Nusery')
-forager = Forager('forager')
+forager = Forager('forager', 0)
 # tunneler = Worker('tunneler')
 # soldier = Worker('soldier')

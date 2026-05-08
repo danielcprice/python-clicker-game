@@ -1,8 +1,12 @@
 import pygame
-from data import Population, food, larvae, queen, maintain_all
+from data import Population, food, larvae, queen, win_loss_check, maintain_all
 from utils import time
 from simple_gui.gui import SCREEN
 from simple_gui.button import TextButton, get_font
+from simple_gui.status_bar import StatusBar
+
+# Colors
+BROWN = (30, 26, 21)
 
 # Screen Positions
 screen_height = SCREEN.get_height()
@@ -19,16 +23,19 @@ play_button = TextButton(SCREEN, (150,2,2), screen_width - 150, screen_height - 
 pause_button = TextButton(SCREEN, (150,2,2), screen_width - 150, screen_height - 200, 50, 100, 5, 10, "PAUSE")
 exit_button = TextButton(SCREEN, (150,2,2), screen_width - 150, screen_height - 100, 50, 100, 5, 10, "EXIT")
 
-# Resource Trackers
-
 # Main Menu
 main_menu_title = get_font(60).render("Ant Colony!", True, (255, 255, 255))
 main_start_button = TextButton(SCREEN, (2,150,2), center_x, center_y - (screen_height * .2), button_height, button_width, 5, 10, "PLAY")
 main_test_button = TextButton(SCREEN, (2,150,2), center_x, center_y - (screen_height * .08), button_height, button_width, 5, 10, "TEST")
 main_exit_button = TextButton(SCREEN, (150,2,2), center_x, center_y + (screen_height * .1), button_height, button_width, 5, 10, "EXIT")
 
+# Test Status Bar
+# outer_bar = pygame.Rect(50, 50, 200, 20)
+# inner_bar = pygame.Rect(52, 51, (195 * .5), 18)
+status_bar = StatusBar(SCREEN, (255,255,150), (2,150,2), 50, 50, 500, 10)
 
 # Win/Loss Screens
+you_win_message = get_font(60).render("You win!", True, (255, 255, 255))
 you_lose_message = get_font(60).render("You lost the QUEEN!", True, (255, 255, 255))
 
 # Render Components
@@ -73,6 +80,7 @@ def render_game_buttons():
         time.stop_clock()
     if play_button.draw():
         time.start_clock()
+    status_bar.draw(percent = (larvae.amount % 1))
 
 
 # Screens
@@ -87,6 +95,10 @@ def play_game():
         SCREEN.fill((5, 5, 5))
         render_resources()
         render_game_buttons()
+        if win_loss_check() == 'lose':
+            running = lose_screen()
+        elif win_loss_check() == 'win':
+            running = win_screen()
         if exit_button.draw():
             # Exit should eventually clear the game stats and save to file
             time.stop_clock()
@@ -108,8 +120,24 @@ def info_screen():
 def escape_menu():
     pass
 
+def win_screen():
+    SCREEN.fill(BROWN)
+    running = True
+    state = 'MENU'    
+    while running:
+            SCREEN.blit(you_win_message, (center_x, center_y - 200))
+            if main_exit_button.draw():
+                print("Exited")
+                running = False
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+            pygame.display.update()
+    return running
+
 def lose_screen():
-    SCREEN.fill((30, 26, 21))
+    SCREEN.fill(BROWN)
     running = True
     state = 'MENU'    
     while running:
@@ -117,9 +145,9 @@ def lose_screen():
             if main_exit_button.draw():
                 print("Exited")
                 running = False
-                return running
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
             pygame.display.update()
+    return running
