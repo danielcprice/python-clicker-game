@@ -1,5 +1,5 @@
 import pygame
-from data import Population, food, larvae, queen, win_loss_check, maintain_all
+from data import Population, food, larvae, queen, nursery, tunneller, forager, soldier, win_loss_check, maintain_all
 from utils import time
 from simple_gui.gui import SCREEN
 from simple_gui.button import TextButton, get_font
@@ -49,17 +49,19 @@ def render_tracker(resource, x, y):
     SCREEN.blit(tracker, (x, y))
 
 def render_capacity(x, y):
-    population_tracker = get_font().render(("Population " + str(Population.total_population)), True, (255, 255, 255))
-    capacity_tracker = get_font().render(("Capacity " + str(Population.capacity)), True, (255, 255, 255))
-    SCREEN.blit(population_tracker, (x, y))
-    SCREEN.blit(capacity_tracker, (x, (y + 40)))
+    capacity_tracker = get_font().render(("Capacity " + str(Population.total_population) + " / " + str(Population.capacity)), True, (255, 255, 255))
+    SCREEN.blit(capacity_tracker, (x, y))
 
 def render_resources():
     # if resources then for resources get tracker
     render_tracker(food, 5, 5)
     render_tracker(queen, 5, 85)
     render_tracker(larvae, 5, 125)
-    render_capacity(5, 165)
+    render_tracker(nursery, 5, 165)
+    render_tracker(forager, 5, 205)
+    render_tracker(tunneller, 5, 245)
+    render_tracker(soldier, 5, 285)
+    render_capacity(5, 325)
 
 def render_products():
     # if products then for products get tracker
