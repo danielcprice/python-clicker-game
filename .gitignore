@@ -1,0 +1,4 @@
+__pycache__
+simple_gui/__pycache__/
+__pycache__/
+*.pyc

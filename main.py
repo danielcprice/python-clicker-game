@@ -1,6 +1,8 @@
-from utils import SCREEN, GameClock
+from data import SCREEN, GameClock
 import pygame, components
 from sys import exit
+
+pygame.display.set_caption("Ant Colony!")
 
 def main():
     SCREEN.fill(components.BROWN)

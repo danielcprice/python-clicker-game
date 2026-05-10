@@ -1,6 +1,5 @@
 import pygame
-from data import Population, food, larvae, queen, nursery, tunneller, forager, soldier, win_loss_check, maintain_all
-from utils import time
+from data import Population, food, larvae, queen, nursery, tunneller, forager, soldier, win_loss_check, maintain_all, time
 from simple_gui.gui import SCREEN
 from simple_gui.button import TextButton, get_font
 from simple_gui.status_bar import StatusBar
@@ -19,9 +18,9 @@ center_y = (SCREEN.get_height() / 2) - (button_height / 2)
 # Game Buttons
 food_button = TextButton(SCREEN, (150,150,150), center_x, center_y - (screen_height * .15), button_height, button_width, 5, 10, "GET FOOD")
 excavate_button = TextButton(SCREEN, (150,150,150), center_x, center_y + (screen_height * .15), button_height, button_width, 5, 10, "DIG TUNNEL")
-play_button = TextButton(SCREEN, (150,2,2), screen_width - 150, screen_height - 300, 50, 100, 5, 10, "play")
+play_pause_button = TextButton(SCREEN, (150,2,2), screen_width - 180, screen_height - 170, 50, 150, 5, 10, "|| / |>")
 pause_button = TextButton(SCREEN, (150,2,2), screen_width - 150, screen_height - 200, 50, 100, 5, 10, "pause")
-exit_button = TextButton(SCREEN, (150,2,2), screen_width - 150, screen_height - 100, 50, 100, 5, 10, "exit")
+exit_button = TextButton(SCREEN, (150,2,2), screen_width - 180, screen_height - 100, 50, 150, 5, 10, "exit")
 
 # Main Menu
 main_menu_title = get_font(60).render("Ant Colony!", True, (255, 255, 255))
@@ -29,10 +28,9 @@ main_start_button = TextButton(SCREEN, (2,150,2), center_x, center_y - (screen_h
 main_test_button = TextButton(SCREEN, (2,150,2), center_x, center_y - (screen_height * .08), button_height, button_width, 5, 10, "test")
 main_exit_button = TextButton(SCREEN, (150,2,2), center_x, center_y + (screen_height * .1), button_height, button_width, 5, 10, "exit")
 
-# Test Status Bar
-# outer_bar = pygame.Rect(50, 50, 200, 20)
-# inner_bar = pygame.Rect(52, 51, (195 * .5), 18)
-status_bar = StatusBar(SCREEN, (255,255,150), (2,150,2), 50, 50, 500, 10)
+# Status Bars
+queen_status_bar = StatusBar(SCREEN, (255,255,150), (2,150,2), 50, 50, 100, 10)
+larvae_status_bar = StatusBar(SCREEN, (255,255,150), (2,150,2), 100, 100, 100, 10)
 
 # Win/Loss Screens
 you_win_message = get_font(60).render("You win!", True, (255, 255, 255))
@@ -53,36 +51,33 @@ def render_capacity(x, y):
     SCREEN.blit(capacity_tracker, (x, y))
 
 def render_resources():
-    # if resources then for resources get tracker
     render_tracker(food, 5, 5)
     render_tracker(queen, 5, 85)
     render_tracker(larvae, 5, 125)
-    render_tracker(nursery, 5, 165)
     render_tracker(forager, 5, 205)
-    render_tracker(tunneller, 5, 245)
+    render_tracker(nursery, 5, 165)
     render_tracker(soldier, 5, 285)
+    render_tracker(tunneller, 5, 245)
     render_capacity(5, 325)
 
-def render_products():
-    # if products then for products get tracker
-    pass
-
-def render_population():
-    pass
-
-def render_game_buttons():
-    # make a button group class for managing groups of buttons
-    # then they can sorted and be pulled in easily
-    # if buttons get buttons
+def render_game_graphics():
     if food_button.draw():
         food.add_res()
     if excavate_button.draw():
         Population.increase_cap()
-    if pause_button.draw():
-        time.stop_clock()
-    if play_button.draw():
-        time.start_clock()
-    status_bar.draw(percent = (larvae.amount % 1))
+    if play_pause_button.draw():
+        if time.run_clock == True:
+            time.stop_clock()
+        elif time.run_clock == False:
+            time.start_clock()
+    # Queen Larvae Production
+    queen_status_bar.draw(percent = (larvae.amount % 1))
+    # Larvae time to convert into other Ant Type
+    larvae_status_bar.draw(percent = (larvae.maturation % 1))
+    # Tunneller time to dig
+
+
+
 
 
 # Screens
@@ -93,10 +88,10 @@ def play_game():
     # dt = time.tick() / 1000
     while running:
         dt = time.tick(30) / 1000
-        maintain_all(dt)
-        SCREEN.fill((5, 5, 5))
+        maintain_all(dt, time.run_clock)
+        SCREEN.fill(BROWN)
         render_resources()
-        render_game_buttons()
+        render_game_graphics()
         if win_loss_check() == 'lose':
             running = lose_screen()
         elif win_loss_check() == 'win':
@@ -127,7 +122,7 @@ def win_screen():
     running = True
     state = 'MENU'    
     while running:
-            SCREEN.blit(you_win_message, (center_x - 200, center_y - 200))
+            SCREEN.blit(you_win_message, (center_x - 100, center_y - 200))
             if main_exit_button.draw():
                 print("Exited")
                 running = False

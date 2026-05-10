@@ -1,9 +1,7 @@
 import pygame
-pygame.font.init()
+from simple_gui.gui import get_font
 
-def get_font(size=30):
-    font = pygame.font.Font('./assets/pixeloid.sans-bold.ttf', size)
-    return font
+get_font()
 
 class Button():
 
