@@ -147,7 +147,7 @@ class Soldier(Population):
 
 
 # Resources
-food = Resource('food', amount=10000)
+food = Resource('food', amount=2)
 # dew = Resource('dew', amount=10)
 
 # Populations

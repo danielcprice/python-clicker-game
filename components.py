@@ -11,23 +11,23 @@ BROWN = (30, 26, 21)
 # Screen Positions
 screen_height = SCREEN.get_height()
 screen_width = SCREEN.get_width()
-button_height = SCREEN.get_height() * .1
+button_height = SCREEN.get_height() * .08
 button_width = SCREEN.get_width() * .15
 center_x = (SCREEN.get_width() / 2) - (button_width / 2)
 center_y = (SCREEN.get_height() / 2) - (button_height / 2)
 
 # Game Buttons
-food_button = TextButton(SCREEN, (150,150,150), center_x, center_y - (screen_height * .15), button_height, button_width, 5, 10, "COLLECT FOOD")
-excavate_button = TextButton(SCREEN, (150,150,150), center_x, center_y + (screen_height * .15), button_height, button_width, 5, 10, "EXCAVATE")
+food_button = TextButton(SCREEN, (150,150,150), center_x, center_y - (screen_height * .15), button_height, button_width, 5, 10, "GET FOOD")
+excavate_button = TextButton(SCREEN, (150,150,150), center_x, center_y + (screen_height * .15), button_height, button_width, 5, 10, "DIG TUNNEL")
 play_button = TextButton(SCREEN, (150,2,2), screen_width - 150, screen_height - 300, 50, 100, 5, 10, "play")
-pause_button = TextButton(SCREEN, (150,2,2), screen_width - 150, screen_height - 200, 50, 100, 5, 10, "PAUSE")
-exit_button = TextButton(SCREEN, (150,2,2), screen_width - 150, screen_height - 100, 50, 100, 5, 10, "EXIT")
+pause_button = TextButton(SCREEN, (150,2,2), screen_width - 150, screen_height - 200, 50, 100, 5, 10, "pause")
+exit_button = TextButton(SCREEN, (150,2,2), screen_width - 150, screen_height - 100, 50, 100, 5, 10, "exit")
 
 # Main Menu
 main_menu_title = get_font(60).render("Ant Colony!", True, (255, 255, 255))
-main_start_button = TextButton(SCREEN, (2,150,2), center_x, center_y - (screen_height * .2), button_height, button_width, 5, 10, "PLAY")
-main_test_button = TextButton(SCREEN, (2,150,2), center_x, center_y - (screen_height * .08), button_height, button_width, 5, 10, "TEST")
-main_exit_button = TextButton(SCREEN, (150,2,2), center_x, center_y + (screen_height * .1), button_height, button_width, 5, 10, "EXIT")
+main_start_button = TextButton(SCREEN, (2,150,2), center_x, center_y - (screen_height * .2), button_height, button_width, 5, 10, "play")
+main_test_button = TextButton(SCREEN, (2,150,2), center_x, center_y - (screen_height * .08), button_height, button_width, 5, 10, "test")
+main_exit_button = TextButton(SCREEN, (150,2,2), center_x, center_y + (screen_height * .1), button_height, button_width, 5, 10, "exit")
 
 # Test Status Bar
 # outer_bar = pygame.Rect(50, 50, 200, 20)
@@ -127,7 +127,7 @@ def win_screen():
     running = True
     state = 'MENU'    
     while running:
-            SCREEN.blit(you_win_message, (center_x, center_y - 200))
+            SCREEN.blit(you_win_message, (center_x - 200, center_y - 200))
             if main_exit_button.draw():
                 print("Exited")
                 running = False
@@ -143,7 +143,7 @@ def lose_screen():
     running = True
     state = 'MENU'    
     while running:
-            SCREEN.blit(you_lose_message, (center_x, center_y - 200))
+            SCREEN.blit(you_lose_message, (center_x - 200, center_y - 200))
             if main_exit_button.draw():
                 print("Exited")
                 running = False

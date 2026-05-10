@@ -12,7 +12,7 @@ def main():
             for clocks in GameClock.clock_list:
                 clocks.start_clock()
             SCREEN.fill((30, 26, 21))
-            SCREEN.blit(components.main_menu_title, (components.center_x, components.center_y - 300))
+            SCREEN.blit(components.main_menu_title, (components.center_x - 80, components.center_y - 300))
             if components.main_start_button.draw():
                 print('GAME')
                 state = 'GAME'
